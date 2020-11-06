@@ -1,4 +1,6 @@
+from sys import argv
 month = [31,29,31,30,31,30,31,31,30,31,30,31]
+monthConv={"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12}
 
 def checkLeapYear(year):
     if (year % 4) == 0:
@@ -62,33 +64,60 @@ def daysInY2(m1,m2,y1,y2):
 
 # Driver's code
 file=open("date_calculator.txt")
-data=file.readlines()
+infoInFile=file.readlines()
 str1=""
 str2=""
 dates=[]
-for i in range(0,len(data)):
-    str1=""
-    data[i]=data[i].replace("\n","")
-    date=""
-    months=""
-    year=""
-    array123=data[i].split(" ")
-    if(len(array123)>2):
-        for j in range(0,2):
-            if array123[1][j].isnumeric()==True:
-                date=date+str(array123[1][j])
-        dict1={"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12}
-        months=str(dict1.get(array123[2][0:3]))
-        year=str(array123[3])
-        str1=date+'/'+months+'/'+year
-
-    else:
-        str1=array123[1].replace(".","/").replace("-", "/")
-    dates.append(str1)
+userDateForm = argv[1]
+if userDateForm[0]=='d':
+    for i in range(0,len(infoInFile)):
+        str1=""
+        infoInFile[i]=infoInFile[i].replace("\n","")
+        date=""
+        months=""
+        year=""
+        array123=infoInFile[i].split(" ")
+        if(len(array123)>2):
+            for j in range(0,2):
+                if array123[1][j].isnumeric()==True:
+                    date=date+str(array123[1][j])
+            months=str(monthConv.get(array123[2][0:3]))
+            year=str(array123[3])
+            str1=date+'/'+months+'/'+year
+    
+        else:
+            str1=array123[1].replace(".","/").replace("-", "/")
+        dates.append(str1)
+else:
+    for i in range(0,len(infoInFile)):
+        str1=""
+        infoInFile[i]=infoInFile[i].replace("\n","")
+        date=""
+        months=""
+        year=""
+        array123=infoInFile[i].split(" ")
+        if(len(array123)>2):
+            for j in range(0,2):
+                if array123[2][j].isnumeric()==True:
+                    date=date+str(array123[2][j])
+            months=str(monthConv.get(array123[1][0:3]))
+            year=str(array123[3])
+            str1=date+'/'+months+'/'+year
+        else:
+            str1=array123[1].replace(".","/").replace("-", "/")
+            str2=str1.split("/")
+            date=str2[1]
+            month=str2[0]
+            year=str2[2]
+            str1=date+'/'+months+'/'+year
+        dates.append(str1)    
+            
 
 date1 = str(dates[0])
 date2 = str(dates[1])
  
+
+#dd/mm/yyyy
 brokenDate1 = date1.split("/")
 brokenDate2 = date2.split("/")
 
