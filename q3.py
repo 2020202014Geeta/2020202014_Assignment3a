@@ -1,3 +1,5 @@
+from os import listdir
+from os.path import isfile, join
 forMinConv = { "9": 0, "10": 1, "11": 2, "12": 3, "1": 4, "2": 5, "3": 6, "4": 7, "5": 8 }
 interValS = []
 interValE = []
@@ -68,6 +70,9 @@ def fillFreeSlots(sepTimeMetaEmp,startE,endE,freeSEmp,freeEEmp):
         freeEEmp.append(480)
 
 def mergeInterval(startEm1,endEm1,startEm2,endEm2):
+    interValS = []
+    interValE = []
+    final=[]
     len1 = len(startEm1)
     len2 = len(startEm2)
     i = 0
@@ -103,45 +108,57 @@ def mergeInterval(startEm1,endEm1,startEm2,endEm2):
                     i = i + 1 
             else:
                 j = j + 1
-     
+              
+    final.append(interValS)
+    final.append(interValE)
+    return final
+
 # Driver's code
-fd1=open("employee1.txt")
-temp1 = fd1.read()
-sEmp1 = temp1.split(":[")
-metaData1 = sEmp1[0].replace("': {",":").split(":")
-empName1 = metaData1[0].replace("{'","")
-date = metaData1[1].replace("{'","")
-#print(date)
-#print(empName1)
-
-fd2=open("employee2.txt")        
-temp2 = fd2.read()
-sEmp2 = temp2.split(":[")
-metaData2 = sEmp2[0].replace("': {",":").split(":")
-empName2 = metaData2[0].replace("{'","")
-#print(empName2)
-
-startE1=[]
-endE1=[]
-startE2=[]
-endE2=[]
-freeStE1=[]
-freeEndE1=[]
-freeStE2=[]
-freeEndE2=[]
+txts = [f for f in listdir('employee') if isfile(join('employee', f))]
+num=len(txts)
+startE=[]
+endE=[]
+freeStE=[]
+freeEndE=[]
 freeSlotFinal=[]
-intervalToPrint1=[]
-intervalToPrint2=[]
+intervalToPrint=[]
+empName=[]
+for i in txts:
+    fd1 = open("Employee/"+str(i))
+    temp1 = fd1.read()
+    sEmp1 = temp1.split(":[")
+    metaData1 = sEmp1[0].replace("': {",":").split(":")
+    empName.append(metaData1[0].replace("{'",""))
+    date = metaData1[1].replace("{'","")
+    temp_startE=[]
+    temp_endE=[]
+    temp_freeStE=[]
+    temp_freeEndE=[]
+    fillFreeSlots(sEmp1,temp_startE,temp_endE,temp_freeStE,temp_freeEndE)
+    startE.append(temp_startE)
+    endE.append(temp_endE)
+    freeStE.append(temp_freeStE)
+    freeEndE.append(temp_freeEndE)
+list10=freeStE[0]
+list11=freeEndE[0]
+for i in range(1,len(startE)):
+    list1=mergeInterval(list10,list11,freeStE[i],freeEndE[i])
+    list10=list1[0]
+    list11=list1[1]
+#print(list10)
+#print(list11)
 
-fillFreeSlots(sEmp1,startE1,endE1,freeStE1,freeEndE1)
-fillFreeSlots(sEmp2,startE2,endE2,freeStE2,freeEndE2)
-
-mergeInterval(freeStE1,freeEndE1,freeStE2,freeEndE2)
+interValS = list10
+interValE = list11
 
 meetSlot = float(input())  
 key = int(meetSlot*60)
-converBackTime(freeStE1,freeEndE1,intervalToPrint1)
-converBackTime(freeStE2,freeEndE2,intervalToPrint2)
+
+for i in range(0,len(freeStE)):
+    tempList = []
+    converBackTime(freeStE[i],freeEndE[i],tempList)
+    intervalToPrint.append(tempList)
+#print(intervalToPrint)
 
 i = 0
 flag = 0
@@ -176,8 +193,9 @@ else:
 
 fOut=open("output.txt","w+")
 fOut.write("Available slot\n")
-fOut.write(empName1 + ": " + str(intervalToPrint1)+"\n")
-fOut.write(empName2 + ": " + str(intervalToPrint2)+"\n\n")
+for i in range(0,len(intervalToPrint)):
+    fOut.write(empName[i] + ": " + str(intervalToPrint[i])+"\n")
+fOut.write("\n")
 fOut.write("Slot Duration: " + str(meetSlot) + " hour\n")
 fOut.write( finalSlot )
 fOut.close()
