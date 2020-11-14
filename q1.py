@@ -12,29 +12,38 @@ while i<=noOfEmpSearch:
     i = i + 1  
 levelList=[]
 
+
+def finder(tempList,toFind,parentList,levelList,length):
+    complete = 0
+    flag = 0    
+    for node in tempList:
+        if node["name"]==toFind:
+            parentList.append(toFind)
+            if flag==0:
+                flag = 1
+                levelList.append(length)
+            if node.get("parent")!= None:
+                toFind = node["parent"]
+            else:
+                complete = 1
+            check = 1
+            break
+    return complete
+
+
 def makeParentList(parentList,toFind):
     check =0
-    flag = 0
     complete=0
     length = len(tree)-1
     while length >= 0:
         tempList = tree[('L'+ str(length))]
         check = 0
-        for node in tempList:
-            if node["name"]==toFind:
-                parentList.append(toFind)
-                if flag==0:
-                    flag = 1
-                    levelList.append(length)
-                if node.get("parent")!= None:
-                    toFind = node["parent"]
-                else:
-                    complete = 1
-                check = 1
-                break
+        complete = finder(tempList,toFind,parentList,levelList,length)
         if complete == 1:
             break
         length = length - 1
+
+
 #print(levelList)
 def fun1(leader):
     for i in range(0,len(tree)):

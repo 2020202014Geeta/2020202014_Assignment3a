@@ -26,6 +26,18 @@ def addLeapDays(y1,y2):
         i = i + 1
     return days  
 
+def finDaysAfterM1(i,lastMonth,y1):
+    daysAftrM1 = 0
+    while i <= lastMonth:
+        if i==2:
+            daysAftrM1 = daysAftrM1 + month[i-1]
+            if checkLeapYear(y1)==0:   #if not a leap year subtract one
+                daysAftrM1 = daysAftrM1 - 1
+        else:
+            daysAftrM1 = daysAftrM1 + month[i-1]
+        i = i + 1
+    return daysAftrM1  
+
 def daysInY1(m1,m2,y1,y2):
     oddDays = 0
     daysAftrM1 = 0
@@ -36,14 +48,7 @@ def daysInY1(m1,m2,y1,y2):
     else:
         lastMonth = 12
     i = m1 + 1
-    while i <= lastMonth:
-        if i==2:
-            daysAftrM1 = daysAftrM1 + month[i-1]
-            if checkLeapYear(y1)==0:   #if not a leap year subtract one
-                daysAftrM1 = daysAftrM1 - 1
-        else:
-            daysAftrM1 = daysAftrM1 + month[i-1]
-        i = i + 1
+    daysAftrM1 = finDaysAfterM1(i,lastMonth,y1)
     return oddDays + daysAftrM1 
 
 def daysInY2(m1,m2,y1,y2):
